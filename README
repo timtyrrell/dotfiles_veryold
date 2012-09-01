@@ -1,0 +1,1 @@
+symlink the files like so: ln -s dotfiles/pryrc ~/.pryrc

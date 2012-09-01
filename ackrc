@@ -1,0 +1,32 @@
+# lexically sort filenames
+--sort-files
+--nogroup
+
+--type-add=ruby=rake,haml
+--type-add=vim=vimrc
+--type-add=js=json,coffee
+--type-add=css=scss,sass
+--type-add=css=less
+
+# add types ack doesn't know about
+--type-set=MARKDOWN=md,mkd,markdown
+--type-set=RDOC=rdoc
+
+# ignore vendor dirs, I rarely want to search in there.  can be overridden by
+# --noignore-dir=vendor
+--ignore-dir=vendor
+--ignore-dir=features
+--ignore-dir=test
+--ignore-dir=doc
+--ignore-dir=assets
+--ignore-dir=db
+--ignore-dir=ext
+--ignore-dir=ckeditor
+--ignore-dir=coverage
+--ignore-dir=pentaho
+--ignore-dir=stories
+--ignore-dir=javascripts.rails2
+--nosql
+
+# --ignore-case
+
