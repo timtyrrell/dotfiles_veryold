@@ -1,6 +1,7 @@
 " pathogen setup
 call pathogen#infect()
 call pathogen#helptags()
+
 syntax on
 filetype plugin indent on
 
@@ -26,6 +27,9 @@ set history=200 " remember more Ex commands"
 " Open current buffer in a new split
 noremap <leader>s <C-w>v<C-w>l
 noremap <leader>i <C-w>s<C-w>j
+
+" Buffer helpers
+nnoremap <leader>l :ls<cr>:b<space>
 
 set autowrite       " Automatically save before commands like :next and :make"
 
@@ -61,6 +65,9 @@ set softtabstop=2
 set expandtab
 set list listchars=tab:\ \ ,trail:·
 
+" toggle absolute line numbers
+let g:NumberToggleTrigger="<F2>"
+
 " simplify split navigation
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -86,16 +93,16 @@ set nowritebackup
 " Command-T configuration
 let g:CommandTMaxHeight=20
 let g:CommandTMatchWindowAtTop = 1
+map <leader>tb :CommandTBuffer<cr>
 map <leader>tv :CommandTFlush<cr>\|:CommandT app/views<cr>
 map <leader>tc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
 map <leader>tm :CommandTFlush<cr>\|:CommandT app/models<cr>
 map <leader>th :CommandTFlush<cr>\|:CommandT app/helpers<cr>
 map <leader>tl :CommandTFlush<cr>\|:CommandT lib<cr>
-map <leader>tp :CommandTFlush<cr>\|:CommandT public<cr>
+map <leader>ta :CommandTFlush<cr>\|:CommandT app/assets/javascripts<cr>
 map <leader>ts :CommandTFlush<cr>\|:CommandT spec<cr>
 
 " font
-" set gfn=Menlo:h12
 " set guifont=Anonymous\ Pro:h12
 set guifont=Anonymous\ Pro\ for\ Powerline:h12
 let g:Powerline_symbols = 'fancy'
@@ -107,11 +114,11 @@ map <Leader>fnt :NERDTreeFind<CR>
 
 " Tab completion and command-T filtering
 set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,vendor/gems/*,test,ext,app/public/assets/javascripts/ckeditor/*,lib/pentaho/*,vendor/plugins/*,stories,coverage,doc,script.rails2,tmp
+set wildignore+=*.o,*.obj,.git,*.rbc,tmp,activemq*,vendor,store-cache
 
 " CTags
-" map <Leader>rt :!ctags --languages=Ruby,JavaScript,HTML --exclude=public/javascripts/ckeditor/* --exclude=app/assets/* --exclude=public/javascripts.rails2/* --exclude=public/javascripts/jquery* --exclude=public/javascripts/chosen* --exclude=public/javascripts/spell/* --exclude=public/javascripts/raphael.js --exclude=.git --exclude=log --exclude=tmp --extra=+f -R *
-map <Leader>rt :!ctags --exclude=public/javascripts/ckeditor/* --exclude=app/assets/* --exclude=public/javascripts.rails2/* --exclude=public/javascripts/jquery* --exclude=public/javascripts/chosen* --exclude=public/javascripts/spell/* --exclude=public/javascripts/raphael.js --exclude=.git --exclude=log --exclude=tmp --exclude=coverage --exclude=db --extra=+f -R *
+" map <Leader>cr :!ctags --languages=Ruby,JavaScript,HTML --exclude=.git --exclude=log --exclude=tmp --exclude=coverage --exclude=db --extra=+f -R *
+map <Leader>cr :!ctags --exclude=.git --exclude=log --exclude=tmp --exclude=coverage --exclude=db --extra=+f -R *
 map <C-\> :tnext<CR>
 set iskeyword+=?,!
 
@@ -127,7 +134,7 @@ set smartcase
 " Show (partial) command in the status line
 set showcmd
 
-" unset zsh as the shell
+" unset zsh as the shell, RVM reason?
 set shell=bash
 
 " ZoomWin configuration
@@ -136,24 +143,19 @@ map <Leader><Leader> :ZoomWin<CR>
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
+function s:setupMarkup()
+  call s:setupWrapping()
+  map <buffer> <Leader>h :Hammer<CR>
+endfunction
+
 " add custom syntax highlighting
 au BufNewFile,BufRead *.json set ft=javascript
 au BufNewFile,BufRead *.ejs set filetype=html
+au BufNewFile,BufRead *.jst set filetype=html
 au BufNewFile,BufRead *[Ss]pec.js set filetype=jasmine-javascript.javascript
-
-" Thorfile, Rakefile, Vagrantfile and Gemfile are Ruby
 au BufRead,BufNewFile {Gemfile,Rakefile,Vagrantfile,Thorfile,config.ru}    set ft=ruby
-
 au BufRead,BufNewFile *.txt call s:setupWrapping()
-
-" Opens an edit command with the path of the currently edited file filled in
-" Normal mode: <Leader>e
-map <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-map <Leader>s :split <C-R>=expand("%:p:h") . "/" <CR>
-map <Leader>v :vnew <C-R>=expand("%:p:h") . "/" <CR>
-
-" Opens a tab edit command with the path of the currently edited file filled in
-map <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
+au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
 
 " Enable syntastic syntax checking
 let g:syntastic_enable_signs=1
@@ -173,14 +175,6 @@ endfunction
 
 " Use Node.js for JavaScript interpretation
 let $JS_CMD='node'
-
-function s:setupMarkup()
-  call s:setupWrapping()
-  map <buffer> <Leader>h :Hammer<CR>
-endfunction
-
-" md, markdown, and mk are markdown and define buffer-local preview
-au BufRead,BufNewFile *.{md,markdown,mdown,mkd,mkdn} call s:setupMarkup()
 
 if &term =~ "xterm-256color"
   set t_Co=256
@@ -252,28 +246,66 @@ nmap <silent> _$ :call Preserve("%s/\\s\\+$//e")<CR><C-l>
 " Resize splits when the window is resized
 au VimResized * exe "normal! \<c-w>="
 
+"narrower window
+map - <C-W><
+"wider window
+map + <C-W>>
+"shorter window
+map _ <C-W>-
+"taller window
+map = <C-W>+
+
+" keep foreground commands in sync
+map fg <c-z>
+
 " Tab indenting
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
-" camelcase remap to w, etc.
-map w <Plug>CamelCaseMotion_w
-map b <Plug>CamelCaseMotion_b
-map e <Plug>CamelCaseMotion_e
-sunmap w
-sunmap b
-sunmap e
-
 nnoremap <bs> :Ack! '\b<c-r><c-w>\b'<cr> " This uses ack.vim to search for the word under the cursor
 
 map <leader>f :AckFromSearch<CR>
 map <leader>F :AckFromSearch<space>
 
+" Command-Shift-F for Ack
+" map <D-F> :Ack!<space>
+
 nnoremap <c-\> <c-w>v<c-]>zvzz " Use c-\ to do c-] but open it in a new split.
 
-" set clipboard=unnamed
+" vim tab navigation
+nnoremap th  :tabfirst<CR>
+nnoremap tj  :tabnext<CR>
+nnoremap tk  :tabprev<CR>
+nnoremap tl  :tablast<CR>
+nnoremap td  :tabclose<CR>
+nnoremap tn  :tabnew<CR>
+
+" move cursor down one line even on wrapping lines
+nnoremap j gj
+nnoremap k gk
+
+" save with enter
+nmap <CR> :write<CR>
+cabbrev w nope
+
+" set clipboard^=unnamed
+" if $TMUX == ''
+"   " set clipboard=unnamed
+"   set clipboard=unnamedplus
+"   " set clipboard+=unnamed
+" endif
 
 " Don't clobber the unnamed register when pasting over text in visual mode.
-vnoremap p pgvy
+" vnoremap p pgvy
+
+":autocmd FileType mail :nmap <F8> :w<CR>:!aspell -e -c %<CR>:e<CR>
+
+" autocmd VimEnter,BufNewFile,BufReadPost * call HardMode()
+nnoremap <leader>h <Esc>:call EasyMode()<CR>
+nnoremap <leader>H <Esc>:call HardMode()<CR>
+
+let g:no_turbux_mappings = 1
+map <leader>rt <Plug>SendTestToTmux
+map <leader>rT <Plug>SendFocusedTestToTmux

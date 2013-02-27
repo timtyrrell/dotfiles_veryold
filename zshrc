@@ -1,9 +1,5 @@
 # Add yourself some shortcuts to projects you often work on
-alias pahr='~/src/pa/hr_suite/'
-alias paap='~/src/pa/applicant_portal/'
-alias pacp='~/src/pa/control_panel/'
-alias src='~/src/'
-alias vim='mvim -v'
+# alias vim='mvim -v'
 alias gdiff='git diff --color-words'
 alias sha='git rev-parse HEAD | pbcopy'
 
@@ -48,8 +44,20 @@ source $ZSH/oh-my-zsh.sh
 HISTSIZE=50000
 SAVEHIST=50000
 
+# ignore duplicate history entries
+setopt histignoredups
+
 # Customize to your needs...
 export PATH=/usr/local/Cellar/ctags/5.8/bin:/usr/local/bin:/usr/local/mysql/bin:/usr/local/share/npm/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin:usr/local/Cellar
+
+export MAVEN_OPTS='-Xms256m -Xmx1224m -XX:+CMSClassUnloadingEnabled -XX:PermSize=64M -XX:MaxPermSize=256M -Dfile.encoding=UTF-8'
+
+#add our own completion functions
+fpath=(~/.zsh/completion $fpath)
+
+# completion
+autoload -U compinit
+compinit
 
 # speedup git auto-complete
 compdef -d git
@@ -68,17 +76,24 @@ bindkey -M viins '^r' history-incremental-search-backward
 KEYTIMEOUT=1
 
 # Ruby speepup
+
 export RUBY_HEAP_MIN_SLOTS=1000000
 export RUBY_HEAP_SLOTS_INCREMENT=1000000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
 export RUBY_GC_MALLOC_LIMIT=1000000000
-export RUBY_HEAP_FREE_MIN=500000
+# export RUBY_GC_MALLOC_LIMIT=60000000
+# export RUBY_FREE_MIN=200000
+# export RUBY_HEAP_MIN_SLOTS=40000
+export RUBY_FREE_MIN=500000
+# export CFLAGS="-march=native -O3 -pipe -fomit-frame-pointer"
 
 mvim()
 {
     (unset GEM_PATH GEM_HOME; command mvim "$@")
 }
 
+#tmuxinator
+[[ -s "$HOME/.tmuxinator/scripts/tmuxinator" ]] && source "$HOME/.tmuxinator/scripts/tmuxinator"
 #RVM
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
 

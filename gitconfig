@@ -1,6 +1,6 @@
 [user]
 	name = Tim Tyrrell
-	email = email@timtyrrell.net
+	email = tim@tyrrell.io
 [color]
     ui = auto
   [color "branch"]
@@ -32,3 +32,5 @@
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+[pull]
+	rebase = true

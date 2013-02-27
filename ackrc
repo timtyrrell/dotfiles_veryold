@@ -2,11 +2,10 @@
 --sort-files
 --nogroup
 
---type-add=ruby=rake,haml
+--type-add=ruby=rake,haml,slim
 --type-add=vim=vimrc
 --type-add=js=json,coffee
---type-add=css=scss,sass
---type-add=css=less
+--type-add=css=scss,sass,less
 
 # add types ack doesn't know about
 --type-set=MARKDOWN=md,mkd,markdown
@@ -18,7 +17,7 @@
 --ignore-dir=features
 --ignore-dir=test
 --ignore-dir=doc
---ignore-dir=assets
+# --ignore-dir=assets
 --ignore-dir=db
 --ignore-dir=ext
 --ignore-dir=ckeditor

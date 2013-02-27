@@ -287,3 +287,9 @@ end
 
 # Show results of all extension-loading
 puts "#{ANSI[:GRAY]}~> Console extensions:#{ANSI[:RESET]} #{$console_extensions.join(' ')}#{ANSI[:RESET]}"
+
+def copy(*args) IO.popen('pbcopy', 'r+') { |clipboard| clipboard.puts args.map(&:inspect) }; end
+
+IRB.conf[:PROMPT_MODE]  = :SIMPLE
+IRB.conf[:USE_READLINE] = true
+IRB.conf[:AUTO_INDENT]  = true
