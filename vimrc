@@ -108,7 +108,7 @@ set guifont=Anonymous\ Pro\ for\ Powerline:h12
 let g:Powerline_symbols = 'fancy'
 
 " NERDTree configuration
-let NERDTreeIgnore=['\.rbc$', '\~$']
+let NERDTreeIgnore=['\.rbc$', '\~$', 'tmp']
 map <Leader>n :NERDTreeToggle<CR>
 map <Leader>fnt :NERDTreeFind<CR>
 
@@ -264,13 +264,12 @@ nnoremap <S-Tab> <<
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
-nnoremap <bs> :Ack! '\b<c-r><c-w>\b'<cr> " This uses ack.vim to search for the word under the cursor
+" Ag settings
+nnoremap <bs> :Ag! '\b<c-r><c-w>\b'<cr> " This uses ag.vim to search for the word under the cursor
+map <leader>F :Ag!<space>
 
-map <leader>f :AckFromSearch<CR>
-map <leader>F :AckFromSearch<space>
-
-" Command-Shift-F for Ack
-" map <D-F> :Ack!<space>
+" leave gitgutter off by default
+let g:gitgutter_enabled = 0
 
 nnoremap <c-\> <c-w>v<c-]>zvzz " Use c-\ to do c-] but open it in a new split.
 
@@ -287,7 +286,7 @@ nnoremap j gj
 nnoremap k gk
 
 " save with enter
-nmap <CR> :write<CR>
+nmap <CR> :write!<CR>
 cabbrev w nope
 
 " set clipboard^=unnamed
